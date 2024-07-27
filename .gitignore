@@ -1,0 +1,111 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Logs
+logs
+*.log
+*.log.*
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+.pnpm-store
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment variables
+.env
+.env.*.local
+
+# MacOS files
+.DS_Store
+
+# Thumbnails
+._*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build output
+dist/
+build/
+out/
+coverage/
+
+# Compiled files
+*.d.ts
+*.js.map
+*.js.flow
+
+# Optional REPL history
+.node_repl_history
+
+# Sensitive files
+keys/
+certs/
+
+# Optional coverage directory
+coverage/
+.nyc_output/
+
+# Coverage reports
+coverage/
+lcov-report/
+
+# Production
+public/
+
+# Hidden files
+.*
+!.gitignore
+
+# Miscellaneous
+*.bak
+*.swp
+*.lock
+*.lock-wscript
+package-lock.json
+yarn.lock
+.pnp.*
+.pnp/
+.editorconfig
+.gitattributes
+.gitattributes.global
+.gitattributes.local
+.prettierignore
+.prettierignore.local
+.prettierignore.global
+
+# Firebase
+.firebase/
+firebase-debug.log
+.firebaserc
+
+# AWS
+.aws/
+
+# VS Code settings
+.history/
