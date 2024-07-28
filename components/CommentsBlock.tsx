@@ -10,13 +10,23 @@ import Skeleton from "@mui/material/Skeleton";
 
 import { SideBlock } from "./SideBlock";
 
+interface User {
+  fullName: string;
+  avatarUrl: string;
+}
+
+interface Comment {
+  user: User;
+  text: string;
+}
+
 export const CommentsBlock = ({
   items,
   children,
   isLoading = true,
 }: {
-  items: [];
-  children: React.ReactNode;
+  items: Comment[];
+  children?: React.ReactNode;
   isLoading?: boolean;
 }) => {
   return (

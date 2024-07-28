@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -19,7 +21,7 @@ export const TagsBlock = ({
     <SideBlock title="Tags">
       <List>
         {(isLoading ? [...Array(5)] : items).map((name, i) => (
-          <a
+          <Link
             style={{ textDecoration: "none", color: "black" }}
             href={`/tags/${name}`}
           >
@@ -35,7 +37,7 @@ export const TagsBlock = ({
                 )}
               </ListItemButton>
             </ListItem>
-          </a>
+          </Link>
         ))}
       </List>
     </SideBlock>
