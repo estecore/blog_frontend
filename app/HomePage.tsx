@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
-import { Skeleton } from "@mui/material";
 
 import { Post } from "../components/Post";
 import { TagsBlock } from "../components/TagsBlock";
