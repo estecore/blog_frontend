@@ -68,7 +68,7 @@ export const Home = () => {
                     key={obj._id}
                     _id={obj._id}
                     title={obj.title}
-                    imageUrl={obj.imageUrl}
+                    imageUrl={process.env.BASE_URL + obj.imageUrl}
                     user={{
                       avatarUrl: obj.user.avatarUrl,
                       fullName: obj.user.fullName,

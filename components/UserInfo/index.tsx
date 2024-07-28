@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import styles from "./UserInfo.module.scss";
 
 export const UserInfo = ({
@@ -11,10 +13,12 @@ export const UserInfo = ({
 }) => {
   return (
     <div className={styles.root}>
-      <img
+      <Image
         className={styles.avatar}
         src={avatarUrl || "/noavatar.png"}
         alt={fullName}
+        width={30}
+        height={30}
       />
       <div className={styles.userDetails}>
         <span className={styles.userName}>{fullName}</span>

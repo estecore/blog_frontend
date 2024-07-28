@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 
 import { useParams, useRouter } from "next/navigation";
 
+import ReactMarkdown from "react-markdown";
+
 import { Container } from "@mui/material";
 
 import { Post } from "@/components/Post";
@@ -75,7 +77,7 @@ export const FullPost = () => {
       <Post
         _id={data._id}
         title={data.title}
-        imageUrl={data.imageUrl}
+        imageUrl={process.env.BASE_URL + data.imageUrl}
         user={data.user}
         createdAt={data.createdAt}
         viewsCount={data.viewsCount}
@@ -83,7 +85,7 @@ export const FullPost = () => {
         tags={data.tags}
         isFullPost
       >
-        <p>{data.text}</p>
+        <ReactMarkdown>{data.text?.toString() || ""}</ReactMarkdown>
       </Post>
     </Container>
   );
