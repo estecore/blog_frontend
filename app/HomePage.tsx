@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
+import { Container } from "@mui/material";
 
 import { Post } from "../components/Post";
 import { TagsBlock } from "../components/TagsBlock";
@@ -32,77 +33,79 @@ export const Home = () => {
 
   return (
     <div className="p-4">
-      <Tabs
-        style={{ marginBottom: 15 }}
-        value={0}
-        aria-label="basic tabs example"
-      >
-        <Tab label="New" />
-        <Tab label="Popular" />
-      </Tabs>
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={8}>
-          {(isPostsLoading ? [...Array(5)] : posts.items).map(
-            (obj: PostType, index: number) =>
-              isPostsLoading ? (
-                <Post
-                  key={index}
-                  isLoading
-                  _id={""}
-                  title={""}
-                  createdAt={""}
-                  imageUrl={""}
-                  user={{
-                    fullName: "",
-                    avatarUrl: "",
-                  }}
-                  viewsCount={0}
-                  commentsCount={0}
-                  tags={[]}
-                  isEditable={false}
-                />
-              ) : (
-                <Post
-                  key={obj._id}
-                  _id={obj._id}
-                  title={obj.title}
-                  imageUrl={obj.imageUrl}
-                  user={{
-                    avatarUrl: obj.user.avatarUrl,
-                    fullName: obj.user.fullName,
-                  }}
-                  createdAt={obj.createdAt}
-                  viewsCount={obj.viewsCount}
-                  commentsCount={obj.commentsCount}
-                  tags={obj.tags}
-                  isEditable={obj.user._id === stateData?.userData?._id}
-                />
-              )
-          )}
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TagsBlock items={tags.items} isLoading={isTagsLoading} />
-          <CommentsBlock
-            items={[
-              {
-                user: {
-                  fullName: "Karl Kasun",
-                  avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
+      <Container maxWidth="lg">
+        <Tabs
+          style={{ marginBottom: 15 }}
+          value={0}
+          aria-label="basic tabs example"
+        >
+          <Tab label="New" />
+          <Tab label="Popular" />
+        </Tabs>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={8}>
+            {(isPostsLoading ? [...Array(5)] : posts.items).map(
+              (obj: PostType, index: number) =>
+                isPostsLoading ? (
+                  <Post
+                    key={index}
+                    isLoading
+                    _id={""}
+                    title={""}
+                    createdAt={""}
+                    imageUrl={""}
+                    user={{
+                      fullName: "",
+                      avatarUrl: "",
+                    }}
+                    viewsCount={0}
+                    commentsCount={0}
+                    tags={[]}
+                    isEditable={false}
+                  />
+                ) : (
+                  <Post
+                    key={obj._id}
+                    _id={obj._id}
+                    title={obj.title}
+                    imageUrl={obj.imageUrl}
+                    user={{
+                      avatarUrl: obj.user.avatarUrl,
+                      fullName: obj.user.fullName,
+                    }}
+                    createdAt={obj.createdAt}
+                    viewsCount={obj.viewsCount}
+                    commentsCount={obj.commentsCount}
+                    tags={obj.tags}
+                    isEditable={obj.user._id === stateData?.userData?._id}
+                  />
+                )
+            )}
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TagsBlock items={tags.items} isLoading={isTagsLoading} />
+            <CommentsBlock
+              items={[
+                {
+                  user: {
+                    fullName: "Karl Kasun",
+                    avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
+                  },
+                  text: "I like it",
                 },
-                text: "I like it",
-              },
-              {
-                user: {
-                  fullName: "Karl Kasun Two",
-                  avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
+                {
+                  user: {
+                    fullName: "Karl Kasun Two",
+                    avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
+                  },
+                  text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
                 },
-                text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-              },
-            ]}
-            isLoading={false}
-          />
+              ]}
+              isLoading={false}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      </Container>
     </div>
   );
 };
