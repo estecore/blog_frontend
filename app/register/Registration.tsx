@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -15,6 +15,8 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 import styles from "./Login.module.scss";
 
@@ -36,13 +38,15 @@ export const Registration = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    console.log("Submitting form with values:", values);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
+  const onSubmit: SubmitHandler<FormValues> = async (values) => {
     const data = await dispatch(fetchRegister(values));
 
     if (!data.payload) {
-      alert("Error registration");
+      setSnackbarMessage("Error registration");
+      setSnackbarOpen(true);
     } else if ("token" in data.payload) {
       window.localStorage.setItem("token", data.payload.token);
       router.push("/");
@@ -54,6 +58,8 @@ export const Registration = () => {
       router.push("/");
     }
   }, [isAuth, router]);
+
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
 
   return (
     <Paper classes={{ root: styles.root }}>
@@ -100,6 +106,15 @@ export const Registration = () => {
           Registration
         </Button>
       </form>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 };
