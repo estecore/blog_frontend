@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -25,6 +25,9 @@ import styles from "./AddPost.module.scss";
 export const AddPost = () => {
   const isAuth = useSelector(selectAuth);
   const router = useRouter();
+  const params = useParams();
+
+  const id = params.id;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -33,6 +36,8 @@ export const AddPost = () => {
   const [tags, setTags] = useState<string>("");
 
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+
+  const isEditing = !!id;
 
   const handleChangeFile = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -68,13 +73,15 @@ export const AddPost = () => {
       const fields = {
         title,
         imageUrl,
-        tags: tags.split(",").map((tag) => tag.trim()),
+        tags,
         text,
       };
 
-      const { data } = await axiosInstance.post("/posts", fields);
+      const { data } = isEditing
+        ? await axiosInstance.patch(`/posts/${id}`, fields)
+        : await axiosInstance.post("/posts", fields);
 
-      const _id = data._id;
+      const _id = isEditing ? id : data._id;
 
       router.push(`/posts/${_id}`);
     } catch (err) {
@@ -84,6 +91,33 @@ export const AddPost = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+      axiosInstance
+        .get(`/posts/${id}`)
+        .then((res) => {
+          setTitle(res.data.title);
+          setText(res.data.text);
+          setTags(res.data.tags.join(","));
+          setImageUrl(res.data.imageUrl);
+        })
+        .catch((err) => {
+          console.error("Error fetching post:", err);
+          alert("Failed to fetch post");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (!window.localStorage.getItem("token") && !isAuth) {
+      router.push("/");
+    }
+  }, [isAuth, router]);
 
   const options = useMemo(
     () => ({
@@ -100,12 +134,6 @@ export const AddPost = () => {
     }),
     []
   );
-
-  useEffect(() => {
-    if (!window.localStorage.getItem("token") && !isAuth) {
-      router.push("/");
-    }
-  }, [isAuth, router]);
 
   return (
     <Container maxWidth="lg">
@@ -135,7 +163,7 @@ export const AddPost = () => {
             </Button>
             <Image
               className={styles.image}
-              src={imageUrl ? process.env.BASE_URL + imageUrl : ""}
+              src={imageUrl ? `${process.env.BASE_URL}${imageUrl}` : ""}
               alt="Uploaded"
               width={600}
               height={600}
@@ -169,7 +197,7 @@ export const AddPost = () => {
         />
         <div className={styles.buttons}>
           <Button onClick={onSubmit} size="large" variant="contained">
-            Publish
+            {isEditing ? "Save" : "Publish"}
           </Button>
           <Link href="/">
             <Button size="large">Cancel</Button>
