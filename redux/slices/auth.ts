@@ -3,9 +3,23 @@ import { RootState } from "../store";
 import { axiosInstance } from "@/axios";
 
 interface AuthParams {
+  fullName?: string;
   email: string;
   password: string;
 }
+
+export const fetchRegister = createAsyncThunk(
+  "auth/fetchRegister",
+  async (params: AuthParams, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post("/auth/register", params);
+      return data;
+    } catch (err) {
+      console.error("Error fetching user data register:", err);
+      return rejectWithValue("Failed to fetch user data register");
+    }
+  }
+);
 
 export const fetchAuth = createAsyncThunk(
   "auth/fetchAuth",
@@ -14,8 +28,8 @@ export const fetchAuth = createAsyncThunk(
       const { data } = await axiosInstance.post("/auth/login", params);
       return data;
     } catch (err) {
-      console.error("Error fetching user data:", err);
-      return rejectWithValue("Failed to fetch user data");
+      console.error("Error fetching user data login:", err);
+      return rejectWithValue("Failed to fetch user data login");
     }
   }
 );
@@ -69,6 +83,18 @@ const authSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchAuthMe.rejected, (state) => {
+        state.status = "error";
+        state.data = null;
+      })
+      .addCase(fetchRegister.pending, (state) => {
+        state.status = "loading";
+        state.data = null;
+      })
+      .addCase(fetchRegister.fulfilled, (state, action) => {
+        state.status = "loaded";
+        state.data = action.payload;
+      })
+      .addCase(fetchRegister.rejected, (state) => {
         state.status = "error";
         state.data = null;
       });

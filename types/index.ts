@@ -22,3 +22,9 @@ export interface Tag {
   name: string;
   count: number;
 }
+
+export type FormValues = {
+  fullName?: string;
+  email: string;
+  password: string;
+};
