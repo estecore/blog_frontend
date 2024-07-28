@@ -1,10 +1,13 @@
+import { ReactNode } from "react";
+
 export interface User {
   avatarUrl: string;
   fullName: string;
 }
 
 export interface Post {
-  id: number;
+  text: ReactNode;
+  _id: string;
   title: string;
   imageUrl: string;
   user: User;
