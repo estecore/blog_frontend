@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 
 import { useParams, useRouter } from "next/navigation";
 
+import ReactMarkdown from "react-markdown";
+
+import { Container } from "@mui/material";
+
 import { Post } from "@/components/Post";
 
 import { Post as PostType } from "@/types";
@@ -47,18 +51,20 @@ export const FullPost = () => {
 
   if (isLoading) {
     return (
-      <Post
-        _id=""
-        title=""
-        imageUrl=""
-        user={{ fullName: "", avatarUrl: "" }}
-        createdAt=""
-        viewsCount={0}
-        commentsCount={0}
-        tags={[]}
-        isFullPost
-        isLoading={isLoading}
-      />
+      <Container maxWidth="lg" sx={{ minHeight: "100vh" }}>
+        <Post
+          _id=""
+          title=""
+          imageUrl=""
+          user={{ fullName: "", avatarUrl: "" }}
+          createdAt=""
+          viewsCount={0}
+          commentsCount={0}
+          tags={[]}
+          isFullPost
+          isLoading={isLoading}
+        />
+      </Container>
     );
   }
 
@@ -67,18 +73,20 @@ export const FullPost = () => {
   }
 
   return (
-    <Post
-      _id={data._id}
-      title={data.title}
-      imageUrl={data.imageUrl}
-      user={data.user}
-      createdAt={data.createdAt}
-      viewsCount={data.viewsCount}
-      commentsCount={data.commentsCount}
-      tags={data.tags}
-      isFullPost
-    >
-      <p>{data.text}</p>
-    </Post>
+    <Container maxWidth="lg" sx={{ minHeight: "100vh" }}>
+      <Post
+        _id={data._id}
+        title={data.title}
+        imageUrl={data.imageUrl ? process.env.BASE_URL + data.imageUrl : ""}
+        user={data.user}
+        createdAt={data.createdAt}
+        viewsCount={data.viewsCount}
+        commentsCount={data.commentsCount}
+        tags={data.tags}
+        isFullPost
+      >
+        <ReactMarkdown>{data.text?.toString() || ""}</ReactMarkdown>
+      </Post>
+    </Container>
   );
 };

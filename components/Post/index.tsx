@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -39,7 +41,7 @@ export const Post = ({
   viewsCount: number;
   commentsCount: number;
   tags: string[];
-  children?: React.ReactNode;
+  children?: ReactNode;
   isFullPost?: boolean;
   isLoading?: boolean;
   isEditable?: boolean;
