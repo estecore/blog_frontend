@@ -59,8 +59,8 @@ export const Home = () => {
               />
             ) : (
               <Post
-                key={obj.id}
-                _id={obj.id}
+                key={obj._id}
+                _id={obj._id}
                 title={obj.title}
                 imageUrl={obj.imageUrl}
                 user={{
