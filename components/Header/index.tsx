@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 
@@ -12,15 +14,15 @@ export const Header = () => {
     <div className={styles.root}>
       <Container maxWidth="lg">
         <div className={styles.inner}>
-          <a className={styles.logo} href="/">
+          <Link className={styles.logo} href="/">
             <div>ESTECORE BLOG</div>
-          </a>
+          </Link>
           <div className={styles.buttons}>
             {isAuth ? (
               <>
-                <a href="/posts/create">
+                <Link href="/posts/create">
                   <Button variant="contained">Write a post</Button>
-                </a>
+                </Link>
                 <Button
                   onClick={onClickLogout}
                   variant="contained"
@@ -31,12 +33,12 @@ export const Header = () => {
               </>
             ) : (
               <>
-                <a href="/login">
+                <Link href="/login">
                   <Button variant="outlined">Log in</Button>
-                </a>
-                <a href="/register">
+                </Link>
+                <Link href="/register">
                   <Button variant="contained">Sign up</Button>
-                </a>
+                </Link>
               </>
             )}
           </div>
