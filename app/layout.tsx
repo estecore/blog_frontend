@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import { ThemeWrapper } from "../components/ThemeWrapper";
+import { Header } from "@/components";
+import { ThemeWrapper } from "@/components/ThemeWrapper";
+import { ClientProvider } from "@/components/ClientProvider";
 
 import "./globals.css";
 
@@ -23,7 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeWrapper>{children}</ThemeWrapper>
+        <ClientProvider>
+          <Header />
+          <ThemeWrapper>{children}</ThemeWrapper>
+        </ClientProvider>
       </body>
     </html>
   );
