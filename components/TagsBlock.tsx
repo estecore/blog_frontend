@@ -22,6 +22,7 @@ export const TagsBlock = ({
       <List>
         {(isLoading ? [...Array(5)] : items).map((name, i) => (
           <Link
+            key={i}
             style={{ textDecoration: "none", color: "black" }}
             href={`/tags/${name}`}
           >
