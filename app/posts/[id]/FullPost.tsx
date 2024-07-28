@@ -77,7 +77,7 @@ export const FullPost = () => {
       <Post
         _id={data._id}
         title={data.title}
-        imageUrl={process.env.BASE_URL + data.imageUrl}
+        imageUrl={data.imageUrl ? process.env.BASE_URL + data.imageUrl : ""}
         user={data.user}
         createdAt={data.createdAt}
         viewsCount={data.viewsCount}
