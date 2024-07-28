@@ -5,6 +5,9 @@ import Link from "next/link";
 
 import clsx from "clsx";
 
+import { useDispatch } from "@/redux/hooks";
+import { fetchRemovePost } from "@/redux/slices/posts";
+
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Clear";
 import EditIcon from "@mui/icons-material/Edit";
@@ -46,11 +49,17 @@ export const Post = ({
   isLoading?: boolean;
   isEditable?: boolean;
 }) => {
+  const dispatch = useDispatch();
+
   if (isLoading) {
     return <PostSkeleton />;
   }
 
-  const onClickRemove = () => {};
+  const onClickRemove = () => {
+    if (window.confirm("Are you sure you want to delete this post?")) {
+      dispatch(fetchRemovePost(_id));
+    }
+  };
 
   return (
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
@@ -61,7 +70,7 @@ export const Post = ({
               <EditIcon />
             </IconButton>
           </Link>
-          <IconButton color="secondary">
+          <IconButton color="secondary" onClick={onClickRemove}>
             <DeleteIcon />
           </IconButton>
         </div>

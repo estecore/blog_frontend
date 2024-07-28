@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
 import { axiosInstance } from "@/axios";
-
 import { Post } from "@/types";
 
 interface PostsState {
@@ -47,6 +45,20 @@ export const fetchTags = createAsyncThunk<
   }
 });
 
+export const fetchRemovePost = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>("posts/fetchRemovePost", async (id, { rejectWithValue }) => {
+  try {
+    await axiosInstance.delete(`/posts/${id}`);
+    return id;
+  } catch (err) {
+    console.error("Error deleting post slice:", err);
+    return rejectWithValue("Failed to delete post");
+  }
+});
+
 const initialState: InitialState = {
   posts: {
     items: [],
@@ -64,6 +76,7 @@ const postsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Fetch posts
       .addCase(fetchPosts.pending, (state) => {
         state.posts.items = [];
         state.posts.status = "loading";
@@ -76,6 +89,7 @@ const postsSlice = createSlice({
         state.posts.items = [];
         state.posts.status = "error";
       })
+      // Fetch tags
       .addCase(fetchTags.pending, (state) => {
         state.tags.items = [];
         state.tags.status = "loading";
@@ -87,6 +101,19 @@ const postsSlice = createSlice({
       .addCase(fetchTags.rejected, (state) => {
         state.tags.items = [];
         state.tags.status = "error";
+      })
+      // Remove post
+      .addCase(fetchRemovePost.pending, (state, action) => {
+        state.posts.status = "loading";
+      })
+      .addCase(fetchRemovePost.fulfilled, (state, action) => {
+        state.posts.items = state.posts.items.filter(
+          (obj) => obj._id !== action.meta.arg
+        );
+        state.posts.status = "loaded";
+      })
+      .addCase(fetchRemovePost.rejected, (state) => {
+        state.posts.status = "error";
       });
   },
 });
