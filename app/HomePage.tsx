@@ -18,8 +18,8 @@ import { User, Post as PostType, Tag } from "@/types";
 
 export const Home = () => {
   const dispatch = useDispatch();
-  const stateData = useSelector(
-    (state: { auth: { data: { userData: User } | null } }) => state.auth.data
+  const { data: stateData } = useSelector(
+    (state: { auth: { data: { userData: User } | null } }) => state.auth
   );
   const { posts, tags } = useSelector((state) => state.posts);
 
@@ -30,6 +30,42 @@ export const Home = () => {
     dispatch(fetchPosts());
     dispatch(fetchTags());
   }, [dispatch]);
+
+  const renderPosts = () => {
+    if (isPostsLoading) {
+      return [...Array(5)].map((_, index) => (
+        <Post
+          key={index}
+          isLoading
+          _id=""
+          title=""
+          createdAt=""
+          imageUrl=""
+          user={{ fullName: "", avatarUrl: "" }}
+          viewsCount={0}
+          commentsCount={0}
+          tags={[]}
+          isEditable={false}
+        />
+      ));
+    }
+    return posts.items.map((post) => (
+      <Post
+        key={post._id}
+        _id={post._id}
+        title={post.title}
+        imageUrl={
+          post.imageUrl ? `${process.env.BASE_URL}${post.imageUrl}` : ""
+        }
+        user={post.user}
+        createdAt={post.createdAt}
+        viewsCount={post.viewsCount}
+        commentsCount={post.commentsCount}
+        tags={post.tags}
+        isEditable={post.user._id === stateData?.userData?._id}
+      />
+    ));
+  };
 
   return (
     <div className="p-4">
@@ -44,45 +80,7 @@ export const Home = () => {
         </Tabs>
         <Grid container spacing={4}>
           <Grid item xs={12} md={8}>
-            {(isPostsLoading ? [...Array(5)] : posts.items).map(
-              (obj: PostType, index: number) =>
-                isPostsLoading ? (
-                  <Post
-                    key={index}
-                    isLoading
-                    _id={""}
-                    title={""}
-                    createdAt={""}
-                    imageUrl={""}
-                    user={{
-                      fullName: "",
-                      avatarUrl: "",
-                    }}
-                    viewsCount={0}
-                    commentsCount={0}
-                    tags={[]}
-                    isEditable={false}
-                  />
-                ) : (
-                  <Post
-                    key={obj._id}
-                    _id={obj._id}
-                    title={obj.title}
-                    imageUrl={
-                      obj.imageUrl ? process.env.BASE_URL + obj.imageUrl : ""
-                    }
-                    user={{
-                      avatarUrl: obj.user.avatarUrl,
-                      fullName: obj.user.fullName,
-                    }}
-                    createdAt={obj.createdAt}
-                    viewsCount={obj.viewsCount}
-                    commentsCount={obj.commentsCount}
-                    tags={obj.tags}
-                    isEditable={obj.user._id === stateData?.userData?._id}
-                  />
-                )
-            )}
+            {renderPosts()}
           </Grid>
           <Grid item xs={12} md={4}>
             <TagsBlock items={tags.items} isLoading={isTagsLoading} />
