@@ -13,11 +13,14 @@ import { CommentsBlock } from "../components/CommentsBlock";
 import { useDispatch, useSelector } from "@/redux/hooks";
 import { fetchPosts, fetchTags } from "@/redux/slices/posts";
 
+import { User, Post as PostType, Tag } from "@/types";
+
 export const Home = () => {
   const dispatch = useDispatch();
-  const { posts, tags } = useSelector((state) => {
-    return state.posts;
-  });
+  const stateData = useSelector(
+    (state: { auth: { data: { userData: User } | null } }) => state.auth.data
+  );
+  const { posts, tags } = useSelector((state) => state.posts);
 
   const isPostsLoading = posts.status === "loading";
   const isTagsLoading = tags.status === "loading";
@@ -39,45 +42,46 @@ export const Home = () => {
       </Tabs>
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
-          {(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) =>
-            isPostsLoading ? (
-              <Post
-                key={index}
-                isLoading
-                _id={""}
-                title={""}
-                createdAt={""}
-                imageUrl={""}
-                user={{
-                  fullName: "",
-                  avatarUrl: "",
-                }}
-                viewsCount={0}
-                commentsCount={0}
-                tags={[]}
-              />
-            ) : (
-              <Post
-                key={obj._id}
-                _id={obj._id}
-                title={obj.title}
-                imageUrl={obj.imageUrl}
-                user={{
-                  avatarUrl: obj.user.avatarUrl,
-                  fullName: obj.user.fullName,
-                }}
-                createdAt={obj.createdAt}
-                viewsCount={obj.viewsCount}
-                commentsCount={obj.commentsCount}
-                tags={obj.tags}
-                isEditable
-              />
-            )
+          {(isPostsLoading ? [...Array(5)] : posts.items).map(
+            (obj: PostType, index: number) =>
+              isPostsLoading ? (
+                <Post
+                  key={index}
+                  isLoading
+                  _id={""}
+                  title={""}
+                  createdAt={""}
+                  imageUrl={""}
+                  user={{
+                    fullName: "",
+                    avatarUrl: "",
+                  }}
+                  viewsCount={0}
+                  commentsCount={0}
+                  tags={[]}
+                  isEditable={false}
+                />
+              ) : (
+                <Post
+                  key={obj._id}
+                  _id={obj._id}
+                  title={obj.title}
+                  imageUrl={obj.imageUrl}
+                  user={{
+                    avatarUrl: obj.user.avatarUrl,
+                    fullName: obj.user.fullName,
+                  }}
+                  createdAt={obj.createdAt}
+                  viewsCount={obj.viewsCount}
+                  commentsCount={obj.commentsCount}
+                  tags={obj.tags}
+                  isEditable={obj.user._id === stateData?.userData?._id}
+                />
+              )
           )}
         </Grid>
         <Grid item xs={12} md={4}>
           <TagsBlock items={tags.items} isLoading={isTagsLoading} />
-
           <CommentsBlock
             items={[
               {
