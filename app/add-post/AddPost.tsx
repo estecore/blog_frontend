@@ -5,6 +5,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import { axiosInstance } from "@/axios";
 
@@ -13,14 +14,16 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import { Container } from "@mui/material";
 
-import SimpleMDE from "react-simplemde-editor";
-
 import { useSelector } from "@/redux/hooks";
 import { selectAuth } from "@/redux/slices/auth";
 
 import "easymde/dist/easymde.min.css";
 
 import styles from "./AddPost.module.scss";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
 export const AddPost = () => {
   const isAuth = useSelector(selectAuth);
@@ -119,21 +122,27 @@ export const AddPost = () => {
     }
   }, [isAuth, router]);
 
-  const options = useMemo(
-    () => ({
-      spellChecker: false,
-      maxHeight: "400px",
-      autofocus: true,
-      placeholder: "Enter text...",
-      status: false,
-      autosave: {
-        enabled: true,
-        delay: 1000,
-        uniqueId: "add-post-editor",
-      },
-    }),
-    []
-  );
+  const options = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return {
+        spellChecker: false,
+        maxHeight: "400px",
+        autofocus: true,
+        placeholder: "Enter text...",
+        status: false,
+        autosave: {
+          enabled: true,
+          delay: 1000,
+          uniqueId: "add-post-editor",
+        },
+      };
+    }
+    return {};
+  }, []);
+
+  if (typeof window === "undefined") {
+    return null;
+  }
 
   return (
     <Container maxWidth="lg">
@@ -163,7 +172,7 @@ export const AddPost = () => {
             </Button>
             <Image
               className={styles.image}
-              src={imageUrl ? `${process.env.BASE_URL}${imageUrl}` : ""}
+              src={imageUrl ? process.env.BASE_URL + imageUrl : ""}
               alt="Uploaded"
               width={600}
               height={600}
