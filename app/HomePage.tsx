@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Grid from "@mui/material/Grid";
-import { Container } from "@mui/material";
+import { Container, Box } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import IconButton from "@mui/material/IconButton";
 
 import { Post } from "../components/Post";
 import { TagsBlock } from "../components/TagsBlock";
@@ -23,13 +25,32 @@ export const Home = () => {
   );
   const { posts, tags } = useSelector((state) => state.posts);
 
+  const [currentTab, setCurrentTab] = useState(0);
+  const [sortOrders, setSortOrders] = useState<{
+    [key: number]: "asc" | "desc";
+  }>({
+    0: "desc", // newest
+    1: "desc", // most popular
+  });
+
   const isPostsLoading = posts.status === "loading";
   const isTagsLoading = tags.status === "loading";
 
   useEffect(() => {
-    dispatch(fetchPosts());
+    dispatch(fetchPosts({ tab: currentTab, order: sortOrders[currentTab] }));
     dispatch(fetchTags());
-  }, [dispatch]);
+  }, [dispatch, currentTab, sortOrders]);
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setCurrentTab(newValue);
+  };
+
+  const toggleSortOrder = (tabIndex: number) => {
+    setSortOrders((prev) => ({
+      ...prev,
+      [tabIndex]: prev[tabIndex] === "asc" ? "desc" : "asc",
+    }));
+  };
 
   const renderPosts = () => {
     if (isPostsLoading) {
@@ -70,14 +91,52 @@ export const Home = () => {
   return (
     <div className="p-4">
       <Container maxWidth="lg">
-        <Tabs
-          style={{ marginBottom: 15 }}
-          value={0}
-          aria-label="basic tabs example"
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            mb: 2,
+          }}
         >
-          <Tab label="New" />
-          <Tab label="Popular" />
-        </Tabs>
+          <Tabs
+            value={currentTab}
+            onChange={handleTabChange}
+            aria-label="basic tabs example"
+          >
+            <Tab label="New" />
+            <Tab label="Popular" />
+          </Tabs>
+          <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
+            {currentTab === 0 && (
+              <IconButton
+                onClick={() => toggleSortOrder(0)}
+                sx={{
+                  color: sortOrders[0] === "desc" ? "black" : "gray",
+                }}
+              >
+                {sortOrders[0] === "desc" ? (
+                  <ArrowDropDownIcon />
+                ) : (
+                  <ArrowDropUpIcon />
+                )}
+              </IconButton>
+            )}
+            {currentTab === 1 && (
+              <IconButton
+                onClick={() => toggleSortOrder(1)}
+                sx={{
+                  color: sortOrders[1] === "desc" ? "black" : "gray",
+                }}
+              >
+                {sortOrders[1] === "desc" ? (
+                  <ArrowDropDownIcon />
+                ) : (
+                  <ArrowDropUpIcon />
+                )}
+              </IconButton>
+            )}
+          </Box>
+        </Box>
         <Grid container spacing={4}>
           <Grid item xs={12} md={8}>
             {renderPosts()}

@@ -19,11 +19,16 @@ interface InitialState {
 
 export const fetchPosts = createAsyncThunk<
   Post[],
-  void,
+  { tab: number; order: string },
   { rejectValue: string }
->("posts/fetchPosts", async (_, { rejectWithValue }) => {
+>("posts/fetchPosts", async ({ tab, order }, { rejectWithValue }) => {
   try {
-    const { data } = await axiosInstance.get<Post[]>("/posts");
+    const { data } = await axiosInstance.get<Post[]>("/posts", {
+      params: {
+        sortBy: tab === 0 ? "createdAt" : "viewsCount",
+        order,
+      },
+    });
     return data;
   } catch (err) {
     console.error("Error fetching posts slice:", err);
