@@ -194,7 +194,7 @@ export const AddPost = () => {
           <Button onClick={onSubmit} size="large" variant="contained">
             {isEditing ? "Save" : "Publish"}
           </Button>
-          <Link href="/">
+          <Link href="/" passHref>
             <Button size="large">Cancel</Button>
           </Link>
         </div>

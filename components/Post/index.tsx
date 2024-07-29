@@ -65,7 +65,7 @@ export const Post = ({
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
       {isEditable && (
         <div className={styles.editButtons}>
-          <Link href={`/posts/${_id}/edit`}>
+          <Link href={`/posts/${_id}/edit`} passHref>
             <IconButton color="primary">
               <EditIcon />
             </IconButton>
@@ -90,12 +90,20 @@ export const Post = ({
           <h2
             className={clsx(styles.title, { [styles.titleFull]: isFullPost })}
           >
-            {isFullPost ? title : <Link href={`/posts/${_id}`}>{title}</Link>}
+            {isFullPost ? (
+              title
+            ) : (
+              <Link href={`/posts/${_id}`} passHref>
+                {title}
+              </Link>
+            )}
           </h2>
           <ul className={styles.tags}>
             {tags.map((name) => (
               <li key={name}>
-                <Link href={`/tag/${name}`}>#{name}</Link>
+                <Link href={`/tag/${name}`} passHref>
+                  #{name}
+                </Link>
               </li>
             ))}
           </ul>

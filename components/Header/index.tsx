@@ -14,7 +14,7 @@ export const Header = () => {
   const isAuth = useSelector(selectAuth);
   const dispatch = useDispatch();
 
-  const onClickLogout = () => {
+  const onClickLogout = async () => {
     if (window.confirm("Are you sure you want to exit?")) {
       dispatch(logout());
       window.localStorage.removeItem("token");
@@ -22,16 +22,16 @@ export const Header = () => {
   };
 
   return (
-    <div className={styles.root}>
+    <header className={styles.root}>
       <Container maxWidth="lg">
         <div className={styles.inner}>
-          <Link className={styles.logo} href="/">
+          <Link className={styles.logo} href="/" passHref>
             <div>ESTECORE BLOG</div>
           </Link>
           <div className={styles.buttons}>
             {isAuth ? (
               <>
-                <Link href="/add-post">
+                <Link href="/add-post" passHref>
                   <Button variant="contained">Write a post</Button>
                 </Link>
                 <Button
@@ -44,10 +44,10 @@ export const Header = () => {
               </>
             ) : (
               <>
-                <Link href="/login">
+                <Link href="/login" passHref>
                   <Button variant="outlined">Log in</Button>
                 </Link>
-                <Link href="/register">
+                <Link href="/register" passHref>
                   <Button variant="contained">Sign up</Button>
                 </Link>
               </>
@@ -55,6 +55,6 @@ export const Header = () => {
           </div>
         </div>
       </Container>
-    </div>
+    </header>
   );
 };
