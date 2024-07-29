@@ -5,7 +5,7 @@
   "license": "MIT",
   "author": "Estecore",
   "scripts": {
-    "dev": "next dev --port 0030",
+    "dev": "next dev --port 1337",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,22 +13,35 @@
     "commit": "git add . && cz && git push"
   },
   "dependencies": {
-    "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.5"
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.5",
+    "@mui/material": "^5.16.5",
+    "@reduxjs/toolkit": "^2.2.7",
+    "axios": "^1.7.2",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.52.1",
+    "react-markdown": "^9.0.1",
+    "react-redux": "^9.1.2",
+    "react-simplemde-editor": "^5.2.0",
+    "sass": "^1.77.8"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.5",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
-    "husky": "^9.0.11"
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "husky": "^9.0.11",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   },
   "config": {
     "commitizen": {
