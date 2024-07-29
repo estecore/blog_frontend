@@ -20,43 +20,53 @@ interface Comment {
   text: string;
 }
 
-export const CommentsBlock = ({
-  items,
-  children,
-  isLoading = true,
-}: {
+interface CommentsBlockProps {
   items: Comment[];
   children?: React.ReactNode;
   isLoading?: boolean;
+}
+
+const LoadingSkeleton = () => (
+  <ListItem alignItems="flex-start">
+    <ListItemAvatar>
+      <Skeleton variant="circular" width={40} height={40} />
+    </ListItemAvatar>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <Skeleton variant="text" height={25} width={120} />
+      <Skeleton variant="text" height={18} width={230} />
+    </div>
+  </ListItem>
+);
+
+export const CommentsBlock: React.FC<CommentsBlockProps> = ({
+  items,
+  children,
+  isLoading = true,
 }) => {
   return (
     <SideBlock title="Comments">
       <List>
-        {(isLoading ? [...Array(5)] : items).map((obj, index) => (
-          <React.Fragment key={index}>
-            <ListItem alignItems="flex-start">
-              <ListItemAvatar>
-                {isLoading ? (
-                  <Skeleton variant="circular" width={40} height={40} />
-                ) : (
-                  <Avatar alt={obj.user.fullName} src={obj.user.avatarUrl} />
-                )}
-              </ListItemAvatar>
-              {isLoading ? (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <Skeleton variant="text" height={25} width={120} />
-                  <Skeleton variant="text" height={18} width={230} />
-                </div>
-              ) : (
-                <ListItemText
-                  primary={obj.user.fullName}
-                  secondary={obj.text}
-                />
-              )}
-            </ListItem>
-            <Divider variant="inset" component="li" />
-          </React.Fragment>
-        ))}
+        {isLoading
+          ? Array.from({ length: 5 }).map((_, index) => (
+              <React.Fragment key={index}>
+                <LoadingSkeleton />
+                <Divider variant="inset" component="li" />
+              </React.Fragment>
+            ))
+          : items.map((obj, index) => (
+              <React.Fragment key={index}>
+                <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar alt={obj.user.fullName} src={obj.user.avatarUrl} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={obj.user.fullName}
+                    secondary={obj.text}
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </React.Fragment>
+            ))}
       </List>
       {children}
     </SideBlock>

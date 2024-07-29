@@ -25,7 +25,6 @@ export const Login = () => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isValid },
   } = useForm<FormValues>({
     defaultValues: {
@@ -36,14 +35,21 @@ export const Login = () => {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
-    const data = await dispatch(fetchAuth(values));
+    try {
+      const response = await dispatch(fetchAuth(values));
+      const data = response.payload;
 
-    if (!data.payload) {
-      return alert("Invalid email or password");
-    }
+      if (!data) {
+        throw new Error("Invalid email or password");
+      }
 
-    if ("token" in data.payload) {
-      window.localStorage.setItem("token", data.payload.token);
+      if ("token" in data) {
+        window.localStorage.setItem("token", data.token);
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Invalid login");
     }
   };
 
@@ -54,19 +60,19 @@ export const Login = () => {
   }, [isAuth, router]);
 
   return (
-    <Paper classes={{ root: styles.root }}>
-      <Typography classes={{ root: styles.title }} variant="h5">
+    <Paper className={styles.root}>
+      <Typography className={styles.title} variant="h5">
         Log in
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <TextField
           type="email"
           className={styles.field}
           label="E-Mail"
           fullWidth
           {...register("email", { required: "E-Mail is required" })}
-          error={!!errors.email}
-          helperText={errors.email ? errors.email.message : "Write your E-Mail"}
+          error={Boolean(errors.email)}
+          helperText={errors.email?.message || "Write your E-Mail"}
         />
         <TextField
           className={styles.field}
@@ -74,8 +80,8 @@ export const Login = () => {
           type="password"
           fullWidth
           {...register("password", { required: "Password is required" })}
-          error={!!errors.password}
-          helperText={errors.password ? errors.password.message : ""}
+          error={Boolean(errors.password)}
+          helperText={errors.password?.message || ""}
         />
         <Button
           size="large"

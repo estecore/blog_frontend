@@ -45,75 +45,65 @@ export const AddPost = () => {
   const handleChangeFile = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    const file = event.target?.files?.[0];
+    if (!file) return;
+
     try {
-      const files = event.target?.files;
-      if (files && files.length > 0) {
-        const formData = new FormData();
-        formData.append("image", files[0]);
+      const formData = new FormData();
+      formData.append("image", file);
 
-        const { data } = await axiosInstance.post("/upload", formData);
+      const { data } = await axiosInstance.post("/upload", formData);
 
-        setImageUrl(data.url);
-      }
+      setImageUrl(data.url);
     } catch (err) {
-      console.error("Error adding post:", err);
-      alert("Failed to upload image to post");
+      console.error("Error uploading image:", err);
+      alert("Failed to upload image");
     }
   };
 
-  const onClickRemoveImage = () => {
-    setImageUrl("");
-  };
+  const onClickRemoveImage = () => setImageUrl("");
 
-  const onChange = useCallback((value: React.SetStateAction<string>) => {
-    setText(value);
-  }, []);
+  const onChange = useCallback((value: string) => setText(value), []);
 
   const onSubmit = async () => {
     try {
       setLoading(true);
 
-      const fields = {
-        title,
-        imageUrl,
-        tags,
-        text,
-      };
+      const fields = { title, imageUrl, tags, text };
+      const request = isEditing
+        ? axiosInstance.patch(`/posts/${id}`, fields)
+        : axiosInstance.post("/posts", fields);
 
-      const { data } = isEditing
-        ? await axiosInstance.patch(`/posts/${id}`, fields)
-        : await axiosInstance.post("/posts", fields);
-
+      const { data } = await request;
       const _id = isEditing ? id : data._id;
 
       router.push(`/posts/${_id}`);
     } catch (err) {
-      console.error("Error adding post:", err);
-      alert("Failed to create post");
+      console.error("Error saving post:", err);
+      alert("Failed to save post");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (id) {
-      setLoading(true);
-      axiosInstance
-        .get(`/posts/${id}`)
-        .then((res) => {
-          setTitle(res.data.title);
-          setText(res.data.text);
-          setTags(res.data.tags.join(","));
-          setImageUrl(res.data.imageUrl);
-        })
-        .catch((err) => {
-          console.error("Error fetching post:", err);
-          alert("Failed to fetch post");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+    if (!id) return;
+
+    setLoading(true);
+    axiosInstance
+      .get(`/posts/${id}`)
+      .then((res) => {
+        const { title, text, tags, imageUrl } = res.data;
+        setTitle(title);
+        setText(text);
+        setTags(tags.join(","));
+        setImageUrl(imageUrl);
+      })
+      .catch((err) => {
+        console.error("Error fetching post:", err);
+        alert("Failed to fetch post");
+      })
+      .finally(() => setLoading(false));
   }, [id]);
 
   useEffect(() => {
@@ -122,27 +112,23 @@ export const AddPost = () => {
     }
   }, [isAuth, router]);
 
-  const options = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return {
-        spellChecker: false,
-        maxHeight: "400px",
-        autofocus: true,
-        placeholder: "Enter text...",
-        status: false,
-        autosave: {
-          enabled: true,
-          delay: 1000,
-          uniqueId: "add-post-editor",
-        },
-      };
-    }
-    return {};
-  }, []);
+  const options = useMemo(
+    () => ({
+      spellChecker: false,
+      maxHeight: "400px",
+      autofocus: true,
+      placeholder: "Enter text...",
+      status: false,
+      autosave: {
+        enabled: true,
+        delay: 1000,
+        uniqueId: "add-post-editor",
+      },
+    }),
+    []
+  );
 
-  if (typeof window === "undefined") {
-    return null;
-  }
+  if (typeof window === "undefined") return null;
 
   return (
     <Container maxWidth="lg">
@@ -183,7 +169,7 @@ export const AddPost = () => {
         <br />
         <br />
         <TextField
-          classes={{ root: styles.title }}
+          className={styles.title}
           variant="standard"
           placeholder="Title..."
           value={title}
@@ -191,7 +177,7 @@ export const AddPost = () => {
           fullWidth
         />
         <TextField
-          classes={{ root: styles.tags }}
+          className={styles.tags}
           variant="standard"
           placeholder="Tags"
           value={tags}
@@ -208,7 +194,7 @@ export const AddPost = () => {
           <Button onClick={onSubmit} size="large" variant="contained">
             {isEditing ? "Save" : "Publish"}
           </Button>
-          <Link href="/">
+          <Link href="/" passHref>
             <Button size="large">Cancel</Button>
           </Link>
         </div>

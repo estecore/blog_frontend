@@ -20,9 +20,7 @@ export const FullPost = () => {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
-  const params = useParams();
-
-  const id = params.id;
+  const { id } = useParams();
 
   useEffect(() => {
     if (!id) {
@@ -30,46 +28,34 @@ export const FullPost = () => {
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
-    axiosInstance
-      .get(`/posts/${id}`)
-      .then((res) => {
-        setData(res.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
+    const fetchPost = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await axiosInstance.get(`/posts/${id}`);
+        setData(response.data);
+      } catch (err) {
         setError("Failed to fetch post data");
-        setIsLoading(false);
         console.error("Error fetching post data:", err);
-      });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
   }, [id, router]);
 
   if (error) {
-    return <p>{error}</p>;
+    return <ErrorMessage message={error} />;
   }
 
   if (isLoading) {
-    return (
-      <Container maxWidth="lg" sx={{ minHeight: "100vh" }}>
-        <Post
-          _id=""
-          title=""
-          imageUrl=""
-          user={{ fullName: "", avatarUrl: "" }}
-          createdAt=""
-          viewsCount={0}
-          commentsCount={0}
-          tags={[]}
-          isFullPost
-          isLoading={isLoading}
-        />
-      </Container>
-    );
+    return <LoadingPost />;
   }
 
   if (!data) {
-    return <h2>Post not found</h2>;
+    return <ErrorMessage message="Post not found" />;
   }
 
   return (
@@ -77,7 +63,9 @@ export const FullPost = () => {
       <Post
         _id={data._id}
         title={data.title}
-        imageUrl={data.imageUrl ? process.env.BASE_URL + data.imageUrl : ""}
+        imageUrl={
+          data.imageUrl ? `${process.env.BASE_URL}${data.imageUrl}` : ""
+        }
         user={data.user}
         createdAt={data.createdAt}
         viewsCount={data.viewsCount}
@@ -90,3 +78,26 @@ export const FullPost = () => {
     </Container>
   );
 };
+
+const ErrorMessage = ({ message }: { message: string }) => (
+  <Container maxWidth="lg" sx={{ minHeight: "100vh" }}>
+    <h2>{message}</h2>
+  </Container>
+);
+
+const LoadingPost = () => (
+  <Container maxWidth="lg" sx={{ minHeight: "100vh" }}>
+    <Post
+      _id=""
+      title=""
+      imageUrl=""
+      user={{ fullName: "", avatarUrl: "" }}
+      createdAt=""
+      viewsCount={0}
+      commentsCount={0}
+      tags={[]}
+      isFullPost
+      isLoading
+    />
+  </Container>
+);
