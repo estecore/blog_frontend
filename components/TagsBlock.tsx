@@ -23,7 +23,9 @@ export const TagsBlock = ({
         {(isLoading ? [...Array(5)] : items).map((name, i) => (
           <Link
             key={i}
-            href={`/tags/${name}`}
+            //  ============== TODO ==================
+            // href={`/tags/${name}`}
+            href={`/`}
             style={{ textDecoration: "none", color: "black" }}
             passHref
           >
