@@ -8,6 +8,7 @@
 .inner {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .logo {
@@ -35,5 +36,23 @@
 
   a {
     text-decoration: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .inner {
+    flex-direction: column;
+
+    .logo {
+      text-align: right;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      button {
+        margin: 0;
+      }
+    }
   }
 }
