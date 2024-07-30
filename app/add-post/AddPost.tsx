@@ -158,7 +158,7 @@ export const AddPost = () => {
             </Button>
             <Image
               className={styles.image}
-              src={imageUrl ? process.env.BASE_URL + imageUrl : ""}
+              src={imageUrl}
               alt="Uploaded"
               width={600}
               height={600}
