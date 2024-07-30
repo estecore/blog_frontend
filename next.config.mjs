@@ -11,7 +11,7 @@ const nextConfig = {
     domains: [
       "res.cloudinary.com",
       "dev-to-uploads.s3.amazonaws.com",
-      "localhost",
+      process.env.BASE_URL,
     ],
   },
 };
