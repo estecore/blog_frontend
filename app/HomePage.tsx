@@ -75,9 +75,7 @@ export const Home = () => {
         key={post._id}
         _id={post._id}
         title={post.title}
-        imageUrl={
-          post.imageUrl ? `${process.env.BASE_URL}${post.imageUrl}` : ""
-        }
+        imageUrl={post.imageUrl ? post.imageUrl : ""}
         user={post.user}
         createdAt={post.createdAt}
         viewsCount={post.viewsCount}
